@@ -33,6 +33,7 @@ jobs:
         with:
           sarif_file: snyk.sarif
   docker_vulnerability_scan:
+    needs: dependencies_vulnerability_scan
     runs-on: ubuntu-latest
     name: Get docker vulnerabilities
     steps:
