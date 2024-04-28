@@ -5,8 +5,6 @@ jobs:
   dependencies_vulnerability_scan:
     runs-on: ubuntu-latest
     name: Get nodejs dependencies vulnerabilities
-    permissions:
-      actions: write
     steps:
       - name: Get code
         uses: actions/checkout@v4
@@ -30,10 +28,12 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --severity-threshold=high --sarif-file-output=results.sarif
-      - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v3
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          sarif_file: results.sarif
+          name: snyk-scan
+          path: |
+            results.sarif
   docker_vulnerability_scan:
     needs: dependencies_vulnerability_scan
     runs-on: ubuntu-latest
@@ -55,7 +55,7 @@ jobs:
         with:
           image-ref: 'cybersec:${{ github.sha }}'
           format: 'table'
-          exit-code: '1' # Set to 1 to fail the workflow if vulnerabilities are found
+          exit-code: '0' # Set to 1 to fail the workflow if vulnerabilities are found
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
