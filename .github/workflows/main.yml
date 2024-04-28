@@ -17,7 +17,7 @@ jobs:
           push: false
           tags: cybersec:${{ github.sha }}
       - name: Scan the Docker image with Trivy
-        uses: aquasecurity/trivy-action@v0.19.0
+        uses: aquasecurity/trivy-action@master
         with:
           image-ref: 'cybersec:${{ github.sha }}'
           format: 'table'
