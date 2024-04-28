@@ -15,6 +15,7 @@ jobs:
         with:
           context: .
           push: false
+          load: true
           tags: cybersec:${{ github.sha }}
       - name: Scan the Docker image with Trivy
         uses: aquasecurity/trivy-action@master
