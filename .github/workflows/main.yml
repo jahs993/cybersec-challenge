@@ -2,6 +2,36 @@ name: GitHub Actions Demo for VulnNodeApp
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
 on: [push]
 jobs:
+  dependencies_vulnerability_scan:
+    runs-on: ubuntu-latest
+    name: Get nodejs dependencies vulnerabilities
+    steps:
+      - name: Get code
+        uses: actions/checkout@v4
+      - name: Set up node version
+        uses: actions/setup-node@v4
+        with:
+          node-version: 12
+      - name: Cache dependencies
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: deps-node-modules-${{ hashFiles('**/package-lock.json') }}
+      - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npm install
+      - name: Run Snyk to check for vulnerabilities
+        uses: snyk/actions/node@master
+        continue-on-error: true # To make sure that SARIF upload gets called
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high --sarif-file-output=snyk.sarif
+      - name: Upload result to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: snyk.sarif
   docker_vulnerability_scan:
     runs-on: ubuntu-latest
     name: Get docker vulnerabilities
@@ -10,7 +40,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Set up Docker
         uses: docker/setup-buildx-action@v3
-      - name: Build and push
+      - name: Build docker image
         uses: docker/build-push-action@v5
         with:
           context: .
