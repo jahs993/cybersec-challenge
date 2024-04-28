@@ -57,11 +57,11 @@ jobs:
         run: npm install
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@master
-        run: snyk code test
         continue-on-error: true # To make sure that SARIF upload gets called
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
+          command: code test
           args: --severity-threshold=high --json-file-output=sast-scan.json
       - name: Upload artifact
         uses: actions/upload-artifact@v4
