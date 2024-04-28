@@ -28,10 +28,16 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --severity-threshold=high --sarif-file-output=results.sarif
-      - name: Upload result to GitHub Code Scanning
-        uses: github/codeql-action/upload-sarif@v3
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          sarif_file: results.sarif
+          name: artifact-build
+          path: |
+            results.sarif
+#      - name: Upload result to GitHub Code Scanning
+#        uses: github/codeql-action/upload-sarif@v3
+#        with:
+#          sarif_file: results.sarif
   docker_vulnerability_scan:
     needs: dependencies_vulnerability_scan
     runs-on: ubuntu-latest
