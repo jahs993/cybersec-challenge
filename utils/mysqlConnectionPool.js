@@ -3,10 +3,10 @@ var config = require('../config/config');
 
 var pool = mysql.createPool({
     connectionLimit: 10,
-    host: config.DATABASE_HOST,
-    user: config.DATABASE_USER,
-    password: config.DATABASE_PASS,
-    database: config.DATABASE_NAME
+    host: config.localhost,
+    user: config.vulnnodeapp,
+    password: config.password,
+    database: config.vuln_node_app_db
 });
 
 function executeQueryWithParam(query, parameters, callback) {
