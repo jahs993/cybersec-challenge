@@ -118,6 +118,7 @@ jobs:
       - name: Run docker container
         run: docker run -d -p 3000:3000 --name cybersec-challenge-container jahs993/cybersec-challenge
   soos_dast_baseline_analysis:
+    needs: deployment
     name: SOOS DAST Baseline Analysis
     runs-on: ubuntu-latest
     steps:
